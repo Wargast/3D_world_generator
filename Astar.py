@@ -1,26 +1,39 @@
 from collections import deque
+import math
  
 class Graph:
     def __init__(self, img):
         self.adjac_lis = None
         self.grid = img
- 
+        
+    
+       
     def get_neighbors(self, v):
         """
         Return iterable of tuple(neighbor_id, weigth) 
         """
-        return self.adjac_lis[v]
+        neighbors = []
+        if v%self.grid.shape[0]!=0:
+            neighbors.append(v-1)
+        if v!=self.grid.shape[0]-1 :
+            neighbors.append(v+1)
+        if v%self.grid.shape[1]!=0:
+            neighbors.append(v-self.grid.shape[0])
+        if v!=self.grid.shape[1]-1 :
+            neighbors.append(v+self.grid.shape[0])
+        
+        return neighbors
  
     # This is heuristic function which is having equal values for all nodes
-    def h(self, n):
-        H = {
-            'A': 1,
-            'B': 1,
-            'C': 1,
-            'D': 1
-        }
+    def h(self, v, stop):
+        v_x = v//self.grid.shape[1]
+        v_y = v//self.grid.shape[0]
  
-        return H[n]
+        stop_x = stop//self.grid.shape[1]
+        stop_y = stop//self.grid.shape[0]
+ 
+ 
+        return math.sqrt((v_x - stop_x)**2 + (v_y - stop_y)**2)
     
     def a_star_algorithm(self, start, stop):
         # In this open_lst is a lisy of nodes which have been visited, but who's 
@@ -45,7 +58,7 @@ class Graph:
  
             # it will find a node with the lowest value of f() -
             for v in open_lst:
-                if n == None or poo[v] + self.h(v) < poo[n] + self.h(n):
+                if n == None or poo[v] + self.h(v, stop) < poo[n] + self.h(n,stop):
                     n = v
  
             if n == None:
@@ -96,3 +109,7 @@ class Graph:
  
         print('Path does not exist!')
         return None
+    
+    
+if __name__ == "__main__":
+    pass
