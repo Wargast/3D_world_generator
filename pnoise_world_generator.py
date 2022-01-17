@@ -52,18 +52,19 @@ if __name__ == "__main__":
     octaves = 6
 
     ############
-     
-    world = generate_world()    
+    world = Mesh()
+    world.generate_world_z()  
+    np.savetxt('datas/generation1.txt', world.world_z, fmt='%f')
   
     lin_x = np.linspace(0,1,shape[0],endpoint=False)
     lin_y = np.linspace(0,1,shape[1],endpoint=False)
     x,y = np.meshgrid(lin_x,lin_y)
 
-    plt.imshow(world, cmap='terrain')
+    plt.imshow(world.world_z, cmap='terrain')
     
     fig = plt.figure()
     ax = fig.add_subplot(111, projection="3d")
-    ax.plot_surface(x,y,world,cmap='terrain')
+    ax.plot_surface(x,y,world.world_z,cmap='terrain')
     
     plt.show()
   
