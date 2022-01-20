@@ -141,7 +141,7 @@ if __name__ == "__main__":
         [0,0,0,0,0,0,0,0,0],
     ])
     world = np.loadtxt('datas/generation1.txt', dtype=float)
-    plt.imshow(world)
+    plt.imshow(world, cmap='terrain')
     g = Graph(world)
     # plt.show()
     

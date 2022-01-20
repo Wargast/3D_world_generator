@@ -1,9 +1,9 @@
-import math
-import random
+import math 
 import noise
 from matplotlib import pyplot as plt
 import numpy as np
 from mpl_toolkits.mplot3d import axes3d
+from time import time
 
 from graphics.engine import Engine3D
 
@@ -16,24 +16,30 @@ class Mesh():
         persistence = 0.5,
         lacunarity = 2.0,
         octaves = 6,
+        seuil=0
         ):
         self.shape = shape
         self.world_z = np.zeros(shape)
-        self.generate_world_z()
+        self.seuil = seuil
+        self.scale = scale
+        self.persistence = persistence
+        self.lacunarity = lacunarity
+        self.octaves = octaves
     
+        self.generate_world_z()
     
     def generate_world_z(self):
         for i in range(shape[0]):
             for j in range(shape[1]):
-                z = noise.pnoise2(i/scale, 
-                                j/scale, 
-                                octaves=octaves, 
-                                persistence=persistence, 
-                                lacunarity=lacunarity, 
+                z = noise.pnoise2(i/self.scale, 
+                                j/self.scale, 
+                                octaves=self.octaves, 
+                                persistence=self.persistence, 
+                                lacunarity=self.lacunarity, 
                                 repeatx=1024, 
                                 repeaty=1024, 
                                 base=42)
-                self.world_z[i][j] = z if z>=-0.2 else -0.2
+                self.world_z[i][j] = z if z>=self.seuil else self.seuil
     
     def generate_mesh(self):
         pass
@@ -41,9 +47,8 @@ class Mesh():
 if __name__ == "__main__":
     
     ############ Land size
-    
-    width = 200 # map width
-    length = 200 # map length
+    width = 50 # map width
+    length = 50 # map length
     shape = (width, length)
     
     scale = 100.0
@@ -52,7 +57,7 @@ if __name__ == "__main__":
     octaves = 6
 
     ############
-    world = Mesh()
+    world = Mesh(shape=shape, scale=scale, persistence=persistence, lacunarity=lacunarity, octaves=octaves, seuil=-0.04)
     world.generate_world_z()  
     np.savetxt('datas/generation1.txt', world.world_z, fmt='%f')
   
