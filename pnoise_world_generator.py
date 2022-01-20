@@ -57,7 +57,7 @@ if __name__ == "__main__":
     octaves = 6
 
     ############
-    world = Mesh(shape=shape, scale=scale, persistence=persistence, lacunarity=lacunarity, octaves=octaves, seuil=-0.04)
+    world = Mesh(shape=shape, scale=scale, persistence=persistence, lacunarity=lacunarity, octaves=octaves, seuil=-0.02)
     world.generate_world_z()  
     np.savetxt('datas/generation1.txt', world.world_z, fmt='%f')
   
