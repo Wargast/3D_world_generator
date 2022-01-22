@@ -148,8 +148,8 @@ if __name__ == "__main__":
     # start_x, start_y = input("start point 'x,y'").split(',')
     # stop_x, stop_y = input("stop point 'x,y'").split(',')
     
-    start_x, start_y = "70,18".split(',')
-    stop_x, stop_y = "180,80".split(',')
+    start_x, start_y = "28,13".split(',')
+    stop_x, stop_y = "31,39".split(',')
     
     path = g.a_star_algorithm(g.xy2sub(int(start_x), int(start_y)), g.xy2sub(int(stop_x), int(stop_y)))
     for p in path:
