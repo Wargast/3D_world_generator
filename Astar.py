@@ -25,18 +25,33 @@ class Graph:
         neighbors = []
         v_x, v_y = self.sub2xy(v)
         
-        if v_y != 0:
+        if v_y != 0: # N
             weight = abs( self.grid[v_y - 1, v_x] - self.grid[v_y, v_x])
             neighbors.append((v-1, weight))
-        if v_y != self.grid.shape[0]-1:
+        if v_y != self.grid.shape[0]-1: # S
             weight = abs( self.grid[v_y + 1, v_x] - self.grid[v_y, v_x])
             neighbors.append((v+1, weight))
-        if v_x != 0:
-            weight = abs( self.grid[v_y, v_x - 1] - self.grid[v_y, v_x])
-            neighbors.append((v-self.grid.shape[0], weight))
-        if v_x != self.grid.shape[1]-1 :
+        if v_x != self.grid.shape[1]-1 : # E
             weight = abs( self.grid[v_y, v_x + 1] - self.grid[v_y, v_x])
             neighbors.append((v+self.grid.shape[0], weight))
+        if v_x != 0: # W
+            weight = abs( self.grid[v_y, v_x - 1] - self.grid[v_y, v_x])
+            neighbors.append((v-self.grid.shape[0], weight))
+
+        if v_y != 0 and v_x!=0: # NW
+            weight = abs( self.grid[v_y - 1, v_x - 1] - self.grid[v_y, v_x])
+            neighbors.append((self.xy2sub(v_x - 1, v_y - 1), weight))
+        if v_y != 0 and v_x != self.grid.shape[1]-1: # NE
+            weight = abs( self.grid[v_y - 1, v_x + 1] - self.grid[v_y, v_x])
+            neighbors.append((self.xy2sub(v_x + 1, v_y - 1), weight))
+        
+        
+        if v_y != self.grid.shape[0]-1 and v_x != self.grid.shape[1]-1: # SE
+            weight = abs( self.grid[v_y + 1, v_x + 1] - self.grid[v_y, v_x])
+            neighbors.append((self.xy2sub(v_x + 1, v_y + 1), weight))
+        if v_y != self.grid.shape[0]-1 and v_x != 0: # SW
+            weight = abs( self.grid[v_y + 1, v_x - 1] - self.grid[v_y, v_x])
+            neighbors.append((self.xy2sub(v_x - 1, v_y + 1), weight))
         
         
         return neighbors
@@ -46,7 +61,7 @@ class Graph:
         v_x   , v_y    = self.sub2xy(v)
         stop_x, stop_y = self.sub2xy(stop)
  
-        return math.sqrt((v_x - stop_x)**2 + (v_y - stop_y)**2)
+        return math.sqrt((v_x - stop_x)**2 + (v_y - stop_y)**2)*0.05
     
     def a_star_algorithm(self, start, stop):
         # In this open_lst is a lisy of nodes which have been visited, but who's 
@@ -84,7 +99,7 @@ class Graph:
             if n == stop:
                 reconst_path = []
                 print("path reconstruction")
-                print('Par found: {}'.format(par))
+                # print('Par found: {}'.format(par))
                 while par[n] != n:
                     reconst_path.append(n)
                     n = par[n]
@@ -95,7 +110,8 @@ class Graph:
  
                 reconst_path.reverse()
  
-                print('Path found: {}'.format(reconst_path))
+                # print('Path found: {}'.format(reconst_path))
+                print('Path found !')
                 return reconst_path
  
             # for all the neighbors of the current node do
@@ -148,7 +164,7 @@ if __name__ == "__main__":
     # start_x, start_y = input("start point 'x,y'").split(',')
     # stop_x, stop_y = input("stop point 'x,y'").split(',')
     
-    start_x, start_y = "28,13".split(',')
+    start_x, start_y = "43,06".split(',')
     stop_x, stop_y = "31,39".split(',')
     
     path = g.a_star_algorithm(g.xy2sub(int(start_x), int(start_y)), g.xy2sub(int(stop_x), int(stop_y)))
