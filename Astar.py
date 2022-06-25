@@ -61,15 +61,14 @@ class Graph:
         v_x   , v_y    = self.sub2xy(v)
         stop_x, stop_y = self.sub2xy(stop)
  
-        return math.sqrt((v_x - stop_x)**2 + (v_y - stop_y)**2)*0.05
+        return math.sqrt((v_x - stop_x)**2 + (v_y - stop_y)**2)*0.5
     
     def a_star_algorithm(self, start, stop):
-        # In this open_lst is a lisy of nodes which have been visited, but who's 
+        # In this `open_lst` is a lisy of nodes which have been visited, but who's 
         # neighbours haven't all been always inspected, It starts off with the start 
-        # node
-        closed_lst = set([])
-        # And closed_lst is a list of nodes which have been visited
+        # node and `closed_lst` is a list of nodes which have been visited
         # and who's neighbors have been always inspected
+        closed_lst = set([])
         open_lst = set([start])
  
         # poo has present distances from start to all other nodes

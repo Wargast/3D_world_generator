@@ -8,6 +8,7 @@ import pyvistaqt as pvqt
 from Astar import Graph
 from threading import Thread
 import time
+from scipy.stats import norm
 
 
 class Mesh():
@@ -80,14 +81,14 @@ class Mesh():
         for mesh, tex in self.textured_meshes.values():
             # mesh, tex = mesh_tex
             p.add_mesh(mesh, texture=tex, line_width=10, render_lines_as_tubes=True)
-        if self.path:
-            p.add_points(
-                np.array(self.path),
-                render_points_as_spheres=True,
-                point_size=15
-            )
-        if self.line.points.size != 0:
-            p.add_lines(self.line.points, width=5, color='r')
+        # if self.path:
+        #     p.add_points(
+        #         np.array(self.path),
+        #         render_points_as_spheres=True,
+        #         point_size=15
+        #     )
+        # if self.line.points.size != 0:
+        #     p.add_lines(self.line.points, width=10, color='r')
         
         p.enable_eye_dome_lighting()
         p.camera_position = [(self.shape[0], self.shape[1], 10),
@@ -145,21 +146,40 @@ class Mesh():
         cells_id = mesh_herbe.find_closest_cell(centers.points)
         reduced_mesh_herbe= mesh_herbe.remove_cells(cells_id)
         
-        self.textured_meshes["path"] = (mesh_path, tex_path) 
-        self.textured_meshes["herbe"] = (reduced_mesh_herbe, tex_herbe) 
+        # self.textured_meshes["path"] = (mesh_path, tex_path) 
+        # self.textured_meshes["herbe"] = (reduced_mesh_herbe, tex_herbe) 
         # self.tube.plot(smooth_shading=True)
 
     def add_random_texture(self, mesh_name, texture, nb):
         mesh, tex = self.textured_meshes[mesh_name]
         
         cell_ids = np.random.randint(0, mesh.n_cells, size=nb)
+
         new_mesh = mesh.extract_cells(cell_ids)
         mesh = mesh.remove_cells(cell_ids)
+
         
         self.textured_meshes["random_tex"] = (new_mesh, texture) 
         self.textured_meshes[mesh_name] = (mesh, tex)
         
+    def add_random_flower(self, mesh_name, mean, scale, std, texture):
+        mesh, tex = self.textured_meshes[mesh_name]
+        new_mesh_cell_ids = []
+        centers = mesh.cell_centers()
+        for cell_id in range(mesh.n_cells):
+            z = centers.points[cell_id, 2]
+            p = np.random.rand()
+            seuil = scale * norm.pdf(z, loc=mean, scale=std)
+            # print('z:', z, 'p:', p, 'seuil:', seuil)
+            if p < seuil:
+                new_mesh_cell_ids.append(cell_id)
 
+        new_mesh = mesh.extract_cells(new_mesh_cell_ids)
+        mesh = mesh.remove_cells(new_mesh_cell_ids)
+
+        
+        self.textured_meshes["random_tex"] = (new_mesh, texture) 
+        self.textured_meshes[mesh_name] = (mesh, tex)
 
 if __name__ == "__main__":
     
@@ -210,7 +230,10 @@ if __name__ == "__main__":
     world.generate_path((43,6), (31,39), tex_chemin)
     
 # Add random flower
-    # world.add_random_texture("herbe", tex_herbe_fleure, nb=1000)
+    mean = 0 
+    std = 2
+    scale = 5
+    world.add_random_flower("herbe", mean, std, scale, tex_herbe_fleure,)
 
     world.plot_all_meshes()
     # shrink globe in the background
