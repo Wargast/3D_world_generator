@@ -87,8 +87,8 @@ class Mesh():
         #         render_points_as_spheres=True,
         #         point_size=15
         #     )
-        # if self.line.points.size != 0:
-        #     p.add_lines(self.line.points, width=10, color='r')
+        if self.line.points.size != 0:
+            p.add_lines(self.line.points, width=10, color='r')
         
         p.enable_eye_dome_lighting()
         p.camera_position = [(self.shape[0], self.shape[1], 10),
@@ -135,7 +135,7 @@ class Mesh():
             self.path.append([x,y,self.world_z[y,x]*100])
         
         self.line = self.lines_from_points(np.array(self.path))
-        # line.plot(line_width=4, color='k')
+        # self.line.plot(line_width=4, color='k')
         mesh_herbe, tex_herbe = self.textured_meshes["herbe"]
 
         point_ind = [mesh_herbe.find_closest_point(p) for p in self.path]
